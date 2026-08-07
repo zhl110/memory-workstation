@@ -1,0 +1,27 @@
+{
+  "version": "0.11.0",
+  "description": "Only-MW-zhl skill file sync manifest.",
+  "updated_at": "2026-07-10T23:39:01Z",
+  "files": {
+    "SKILL.md": {
+      "hash": "DF24A85DB7BF87B1",
+      "deps": [],
+      "auto_gen": false,
+      "note": "v0.23.0 refactored: removed classify/fuse flows, CLI-focused, 189 lines"
+    },
+    "CHANGELOG.md": {
+      "hash": "b7e2d5a1c3f84960",
+      "deps": [],
+      "auto_gen": false,
+      "note": "version log, manual"
+    },
+    "_meta.json": {
+      "hash": "c4a1b3e2d5f87960",
+      "deps": [],
+      "auto_gen": false,
+      "note": "metadata"
+    }
+  },
+  "dependencies": {},
+  "_last_sync": "2026-07-10T23:39:01Z"
+}

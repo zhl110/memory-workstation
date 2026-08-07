@@ -5,6 +5,30 @@
 >
 > 数据与软件分离：记忆数据存储在本地数据目录，程序与数据零耦合。
 
+## 仓库结构
+
+```
+memory-station/
+├── src/            # 桌面程序（GUI + 扫描 + 分类 + API）
+├── mw-sdk/         # 纯数据引擎 SDK（pip install . 即用）
+├── skills/         # Agent 技能包（Only-MW，需搭配 mw-sdk）
+└── scripts/        # 辅助脚本
+```
+
+## Claude 技能包（skills/）
+
+`skills/Only-MW-zhl/` 是给 Claude/Codex 等 Agent 用的记忆工作流技能（搜索/写入/反思）。使用它依赖 `mw-sdk`：
+
+```bash
+# 1. 安装 SDK
+cd mw-sdk && pip install .
+
+# 2. 部署技能到你的 Agent（示例：Claude Code）
+cp -r skills/Only-MW-zhl ~/.claude/skills/Only-MW-zhl
+```
+
+技能首次运行会自动初始化本地数据文件（模板不含个人内容）。
+
 ## 快速开始
 
 ### 1. 依赖
