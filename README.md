@@ -31,10 +31,8 @@ api_base_url = "http://127.0.0.1:4000/v1/chat/completions"  # LiteLLM网关
 
 ### 3. 运行
 
-> 大型二进制（C++ 核心 `.pyd`、嵌入模型、onnxruntime）默认不入库，clone 后首次使用前需构建：
-> ```bash
-> cd mw-sdk/cpp && build.bat   # Windows，构建 C++ 核心引擎
-> ```
+> C++ 核心引擎（`mw_core.cp313-win_amd64.pyd`）已随仓库分发，Windows + Python 3.13 直接可用。
+> 其他平台/版本需自行编译：`cd mw-sdk/cpp && build.bat`（见 `mw-sdk/cpp/README.md`）。
 
 ```bash
 python -m src.main
