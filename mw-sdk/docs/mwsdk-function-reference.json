@@ -1,0 +1,269 @@
+{
+  "format": "mermaid",
+  "diagramType": "flowchart",
+  "title": "MWSdk 功能参考图",
+  "elements": [
+    {
+      "id": "init",
+      "type": "process",
+      "name": "初始化",
+      "description": "init_schema()",
+      "geometry": {
+        "x": 100,
+        "y": 100,
+        "width": 120,
+        "height": 60
+      }
+    },
+    {
+      "id": "read",
+      "type": "container",
+      "name": "读取方法",
+      "description": "搜索和检索记忆",
+      "geometry": {
+        "x": 300,
+        "y": 50,
+        "width": 200,
+        "height": 200
+      },
+      "children": [
+        {
+          "id": "search",
+          "type": "process",
+          "name": "search()",
+          "description": "全文搜索记忆",
+          "geometry": {
+            "x": 320,
+            "y": 80,
+            "width": 160,
+            "height": 40
+          }
+        },
+        {
+          "id": "get_all_related",
+          "type": "process",
+          "name": "get_all_related()",
+          "description": "获取所有相关记忆",
+          "geometry": {
+            "x": 320,
+            "y": 130,
+            "width": 160,
+            "height": 40
+          }
+        },
+        {
+          "id": "get_memory",
+          "type": "process",
+          "name": "get_memory()",
+          "description": "读取单条完整内容",
+          "geometry": {
+            "x": 320,
+            "y": 180,
+            "width": 160,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "id": "write",
+      "type": "container",
+      "name": "写入方法",
+      "description": "创建和更新记忆",
+      "geometry": {
+        "x": 300,
+        "y": 300,
+        "width": 200,
+        "height": 200
+      },
+      "children": [
+        {
+          "id": "insert_classified",
+          "type": "process",
+          "name": "insert_classified()",
+          "description": "插入分类记忆",
+          "geometry": {
+            "x": 320,
+            "y": 330,
+            "width": 160,
+            "height": 40
+          }
+        },
+        {
+          "id": "update_memory",
+          "type": "process",
+          "name": "update_memory()",
+          "description": "更新已有记忆",
+          "geometry": {
+            "x": 320,
+            "y": 380,
+            "width": 160,
+            "height": 40
+          }
+        },
+        {
+          "id": "insert_cross_refs",
+          "type": "process",
+          "name": "insert_cross_refs()",
+          "description": "批量写入交叉引用",
+          "geometry": {
+            "x": 320,
+            "y": 430,
+            "width": 160,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "id": "export",
+      "type": "container",
+      "name": "导出方法",
+      "description": "导出数据到文件",
+      "geometry": {
+        "x": 600,
+        "y": 100,
+        "width": 200,
+        "height": 150
+      },
+      "children": [
+        {
+          "id": "export_md",
+          "type": "process",
+          "name": "export_md()",
+          "description": "导出Obsidian Markdown",
+          "geometry": {
+            "x": 620,
+            "y": 130,
+            "width": 160,
+            "height": 40
+          }
+        },
+        {
+          "id": "export_jsonl",
+          "type": "process",
+          "name": "export_jsonl()",
+          "description": "导出JSONL格式",
+          "geometry": {
+            "x": 620,
+            "y": 180,
+            "width": 160,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "id": "manage",
+      "type": "container",
+      "name": "管理方法",
+      "description": "数据库管理和统计",
+      "geometry": {
+        "x": 600,
+        "y": 300,
+        "width": 200,
+        "height": 150
+      },
+      "children": [
+        {
+          "id": "backup",
+          "type": "process",
+          "name": "backup()",
+          "description": "备份数据库",
+          "geometry": {
+            "x": 620,
+            "y": 330,
+            "width": 160,
+            "height": 40
+          }
+        },
+        {
+          "id": "get_stats",
+          "type": "process",
+          "name": "get_stats()",
+          "description": "获取统计信息",
+          "geometry": {
+            "x": 620,
+            "y": 380,
+            "width": 160,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "id": "safety",
+      "type": "container",
+      "name": "安全与审计",
+      "description": "安全检测和审计日志",
+      "geometry": {
+        "x": 100,
+        "y": 300,
+        "width": 200,
+        "height": 150
+      },
+      "children": [
+        {
+          "id": "detect_secrets",
+          "type": "process",
+          "name": "detect_secrets()",
+          "description": "检测API密钥",
+          "geometry": {
+            "x": 120,
+            "y": 330,
+            "width": 160,
+            "height": 40
+          }
+        },
+        {
+          "id": "audit",
+          "type": "process",
+          "name": "AuditLog",
+          "description": "审计日志记录",
+          "geometry": {
+            "x": 120,
+            "y": 380,
+            "width": 160,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "type": "edge",
+      "source": "init",
+      "target": "read",
+      "label": "初始化后"
+    },
+    {
+      "type": "edge",
+      "source": "init",
+      "target": "write",
+      "label": "初始化后"
+    },
+    {
+      "type": "edge",
+      "source": "init",
+      "target": "export",
+      "label": "初始化后"
+    },
+    {
+      "type": "edge",
+      "source": "init",
+      "target": "manage",
+      "label": "初始化后"
+    },
+    {
+      "type": "edge",
+      "source": "init",
+      "target": "safety",
+      "label": "初始化后"
+    },
+    {
+      "type": "edge",
+      "source": "write",
+      "target": "safety",
+      "label": "自动检测密钥"
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+# ============================================
+# memory-station 配置文件
+# 首次运行自动生成，本文件为示例模板
+# 复制为 config.toml 后按需修改
+# ============================================
+
+[global]
+app_name = "MemoryWorkbench"
+run_silence = true          # 启动后最小化到托盘
+lock_model_forever = false  # 永久锁定模型不自动释放（调试用）
+auto_startup = false        # 开机自启（可通过托盘菜单切换）
+disk_low_warn_threshold = 5 # 磁盘剩余空间告警阈值（GB）
+reboot_crash_limit = 3      # 1分钟内崩溃多少次停止自重启
+
+[scan]
+disk_black_list = ["C:\\Windows", "C:\\Program Files", "C:\\ProgramData"]
+# Agent记忆目录（只扫描这些位置）
+agent_paths = [
+    "~/.claude/projects",
+    "~/.codex",
+]
+custom_white_path = [
+    # 在此添加你需要扫描的自定义路径，例如：
+    # "~/notes",
+]
+single_file_max_size_mb = 5 # 单文件最大解析大小（MB）
+ignore_suffix = [".tmp", ".bak", ".swp", ".cache"]
+auto_hdd_speed_limit = 20   # HDD每秒处理文件上限
+auto_ssd_speed_limit = 80   # SSD每秒处理文件上限
+scan_priority = "manual_first"  # manual/incr/backup
+
+# ============================================
+# LLM 模型配置
+# ============================================
+
+[llm.classify]
+# 本地模型配置
+local_model_path = ""
+local_n_ctx = 8192
+local_n_gpu_layers = 30
+local_timeout_sec = 60
+
+# 外部API配置
+# provider 选择：
+#   mimo_free   - MiMo 本地 CLI（推荐，免费通道，无需 API Key）
+#   cc_switch   - cc-switch 本地代理（LiteLLM，需要 API Key）
+#   claude      - Anthropic 官方 API 或兼容代理（必须配置 api_key + api_base_url）
+#   openai_api  - OpenAI 兼容 API（需要 API Key）
+#   custom_api  - 自定义 OpenAI 兼容端点（需要 API Key + Base URL）
+provider = "mimo_free"
+api_key = ""                # 填入你的 API Key（如使用外部API）
+api_model = "mimo/mimo-auto"
+api_base_url = ""
+
+# mimo CLI 配置（当provider=mimo_free时使用）
+mimo_serve_host = "127.0.0.1"
+mimo_serve_port = 4096
+mimo_serve_model = "mimo/mimo-auto"  # 免费通道模型（自动选择最佳可用模型）
+
+# cc-switch 本地代理配置（当provider=cc_switch时使用）
+cc_switch_host = "127.0.0.1"
+cc_switch_port = 15721
+cc_switch_model = "deepseek-v4-pro"  # 可选: deepseek-v4-pro, deepseek-v4-flash, mimo-v2.5-pro, mimo-v2.5
+cc_switch_api_key = ""      # 填入你的 cc-switch API Key
+
+# 通用配置
+max_tokens = 512
+temperature = 0.1
+idle_unload_min = 30
+
+# Prompt（可自定义，修改后重启生效）
+classify_prompt = """
+Analyze the document. First extract what useful content it contains, then determine the label based on extracted content.
+
+Step 1 — Extract useful content:
+- Rules/instructions for Agent behavior? (e.g. "Python package path", "plan before executing")
+- Config/paths/parameters/inventory? (e.g. installed plugins, tool paths, API config)
+- Plans/designs/todo? (e.g. roadmap, feature design)
+- Experience/lessons/solutions? (e.g. root cause and fix)
+- Reference knowledge? (tech concepts, architecture docs)
+- If none, describe what the raw content contains.
+
+Step 2 — Determine label based on extracted content:
+- "meta_rule": Agent behavior rules/instructions
+- "config_inventory": config/paths/tool inventory
+- "planning_doc": plans/designs/project structure
+- "self_improve_learn": solutions/lessons/workarounds
+- "memory_layer": reference knowledge worth keeping
+- "chat_log": raw conversation/note, needs later refinement
+- "compact_archive": old/archived content, low usage
+
+Output JSON with these fields:
+1. "label": one of the 7 labels above
+2. "importance": P0(core)/P1(important)/P2(normal)/P3(low)/P4(expired)
+3. "category": Chinese — 技术类/业务类/个人类/AI专属类/参考类/流程类/知识类
+4. "sub_category": e.g. Skill开发/Agent配置/工具链/调试经验/配置规范/通用
+5. "depth": 摘要/概述/详细/原文
+6. "content_type": 结构化文档/代码配置/聊天记录/知识文档/规划文档/经验总结
+7. "summary": Chinese 80-200 chars. Write concrete usable content.
+8. "knowledge_type": 行为规则/项目上下文/技术方案/踩坑经验/配置规范/学习总结/个人偏好/通用参考
+9. "applicability": 通用规则(across all projects)/场景知识(specific context)/会话痕迹(needs refining)
+
+Output ONLY valid JSON, no other text."""
+
+# 聊天记录摘要prompt
+chat_summary_prompt = """
+总结这段对话的主题和结论，输出一句话：
+对话内容：
+{content}
+结论："""
+
+# 经验提炼prompt（用于self_improve_learn类文档）
+experience_prompt = """
+分析以下内容，提取：
+1. 遇到了什么问题？（一句话）
+2. 怎么解决的？（一句话）
+3. 关键要点？（列表，最多3条）
+内容：
+{content}
+输出："""
+
+[llm.embed]
+# 向量嵌入模型（指向本地模型路径或留空使用内置）
+model_path = ""
+n_ctx = 4096
+
+# ============================================
+# 存储配置
+# ============================================
+
+[storage]
+db_path = "./memory_storage/meta.sqlite"
+vector_path = "./memory_storage/vector.lance"
+snapshot_dir = "./memory_storage/snapshot"
+backup_interval_h = 2       # 快照备份间隔（小时）
+max_snapshot_count = 10     # 最多保留快照数
+enable_wal = true           # SQLite WAL模式（提升并发性能）
+
+# ============================================
+# 服务配置
+# ============================================
+
+[mcp]
+enable = true               # 启用MCP服务（Claude/Codex对接）
+multi_client = true         # 支持多客户端并发
+heartbeat_interval = 3      # 心跳间隔（秒）
+
+[api]
+host = "127.0.0.1"          # 仅本地访问（安全）
+port = 8765                 # API端口（被占用会自动+1）
+token = ""                  # 留空则仅自动生成。也可手动填写
+req_limit_per_sec = 5       # 每秒请求限制
+
+# ============================================
+# 记忆生命周期
+# ============================================
+
+[memory_life]
+chat_log_expire_day = 30    # 聊天记录30天自动归档
+short_memory_expire_day = 7 # 短期记忆7天自动升级为长期
+archive_permanent = true    # 归档永久保留
+self_improve_permanent = true  # 学习文档永久保留
+planning_permanent = true   # 规划文档永久保留
+
+# Token熔断
+[token_limit]
+per_entry = 200             # 第一层：单条记忆最大token
+total_return = 350          # 第二层：查询返回总token上限
+output_max = 300            # 第三层：输出校验上限
+
+# ============================================
+# 日志配置
+# ============================================
+
+[log]
+log_level = "INFO"          # DEBUG/INFO/WARN/ERROR
+single_file_max_mb = 50     # 单个日志文件最大大小
+max_log_file_count = 5      # 最多保留日志文件数
+separate_error_log = true   # 独立输出error.log

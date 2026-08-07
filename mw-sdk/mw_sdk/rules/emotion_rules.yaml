@@ -1,0 +1,35 @@
+# 情绪规则表 - Agent直接查表，不需要调LLM
+emotion_rules:
+  # 正面情绪
+  positive:
+    - emotion: "satisfied"
+      keywords: ["好的", "不错", "很好", "完美", "棒", "赞"]
+      intensity: 0.8
+    
+    - emotion: "excited"
+      keywords: ["太好了", "终于", "成功", "搞定了"]
+      intensity: 0.9
+    
+    - emotion: "grateful"
+      keywords: ["谢谢", "感谢", "多谢", "辛苦了"]
+      intensity: 0.7
+  
+  # 负面情绪
+  negative:
+    - emotion: "frustrated"
+      keywords: ["烦", "麻烦", "头疼", "又错了", "怎么又"]
+      intensity: 0.7
+    
+    - emotion: "angry"
+      keywords: ["气死", "垃圾", "什么破", "太差了"]
+      intensity: 0.9
+    
+    - emotion: "confused"
+      keywords: ["不懂", "不明白", "什么意思", "看不懂"]
+      intensity: 0.5
+  
+  # 中性情绪
+  neutral:
+    - emotion: "neutral"
+      default: true
+      intensity: 0.5

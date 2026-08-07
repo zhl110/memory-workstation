@@ -1,0 +1,59 @@
+# 分类规则表 - Agent直接查表，不需要调LLM
+classification_rules:
+  # label分类（基于关键词匹配）
+  label_rules:
+    - label: "规则"
+      keywords: ["必须", "禁止", "不允许", "规定", "规范", "要求", "不要", "别再"]
+      priority: 1
+    
+    - label: "经验"
+      keywords: ["踩坑", "经验", "教训", "发现", "优化", "改进", "解决"]
+      priority: 2
+    
+    - label: "bug-fix"
+      keywords: ["bug", "修复", "fix", "错误", "报错", "异常", "崩溃"]
+      priority: 3
+    
+    - label: "架构决策"
+      keywords: ["选型", "架构", "框架", "方案", "设计", "决定", "trade-off"]
+      priority: 4
+    
+    - label: "项目记录"
+      keywords: ["完成", "进度", "里程碑", "版本", "发布", "上线"]
+      priority: 5
+  
+  # category分类（基于关键词匹配）
+  category_rules:
+    - category: "安全类"
+      keywords: ["密钥", "密码", "token", "secret", "高危", "泄露", "加密"]
+    
+    - category: "执行类"
+      keywords: ["必须先", "等待确认", "先计划", "必须执行", "不得直接"]
+    
+    - category: "代码类"
+      keywords: ["质量", "验证", "可直接运行", "注释", "重构", "代码", "lint"]
+    
+    - category: "工具类"
+      keywords: ["命令行", "脚本", "cli", "工具链", "npm", "pip"]
+  
+  # scope分类（基于关键词匹配）
+  scope_rules:
+    - scope: "global"
+      keywords: ["必须", "禁止", "不允许", "规范", "规则", "安全", "执行"]
+    
+    - scope: "project"
+      keywords: ["项目", "版本", "发布", "milestone", "踩坑", "bug"]
+    
+    - scope: "session"
+      default: true
+  
+  # importance分类（基于关键词匹配）
+  importance_rules:
+    - importance: "P0"
+      keywords: ["必须", "禁止", "不允许", "重要", "关键", "安全"]
+    
+    - importance: "P2"
+      keywords: ["可选", "优化", "改进", "经验"]
+    
+    - importance: "P1"
+      default: true

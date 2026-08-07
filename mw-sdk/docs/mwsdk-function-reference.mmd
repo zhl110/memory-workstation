@@ -1,0 +1,43 @@
+flowchart TD
+    A[初始化<br>init_schema] --> B[读取方法]
+    A --> C[写入方法]
+    A --> D[导出方法]
+    A --> E[管理方法]
+    A --> F[安全与审计]
+    
+    subgraph B [读取方法]
+        B1[search()<br>全文搜索]
+        B2[get_all_related()<br>相关记忆]
+        B3[get_memory()<br>单条内容]
+    end
+    
+    subgraph C [写入方法]
+        C1[insert_classified()<br>插入分类记忆]
+        C2[update_memory()<br>更新已有记忆]
+        C3[insert_cross_refs()<br>交叉引用]
+    end
+    
+    subgraph D [导出方法]
+        D1[export_md()<br>Obsidian Markdown]
+        D2[export_jsonl()<br>JSONL格式]
+    end
+    
+    subgraph E [管理方法]
+        E1[backup()<br>备份数据库]
+        E2[get_stats()<br>统计信息]
+    end
+    
+    subgraph F [安全与审计]
+        F1[detect_secrets()<br>检测API密钥]
+        F2[AuditLog<br>审计日志]
+    end
+    
+    C --> F1
+    C --> F2
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:2px
+    style C fill:#bfb,stroke:#333,stroke-width:2px
+    style D fill:#fbb,stroke:#333,stroke-width:2px
+    style E fill:#bfb,stroke:#333,stroke-width:2px
+    style F fill:#fbb,stroke:#333,stroke-width:2px

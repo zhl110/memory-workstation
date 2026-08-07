@@ -1,0 +1,32 @@
+# 合并规则表 - Agent直接查表，不需要调LLM
+merge_rules:
+  # 通用规则：同类型覆盖
+  - condition:
+      old_scope: "global"
+      new_scope: "global"
+    action: "overwrite"
+    description: "通用规则更新，直接覆盖"
+  
+  # 踩坑经验：独立存储
+  - condition:
+      label: "bug-fix"
+    action: "independent"
+    description: "每个bug独立，不合并"
+  
+  # 架构决策：同一决策覆盖
+  - condition:
+      label: "架构决策"
+    action: "overwrite"
+    description: "同一决策更新，直接覆盖"
+  
+  # 项目记录：时间降序合并
+  - condition:
+      label: "项目记录"
+    action: "structured_merge"
+    description: "按时间降序结构化合并"
+  
+  # 默认：语义相似度判断
+  - condition:
+      default: true
+    action: "semantic_judge"
+    description: "需要语义理解判断是否合并"

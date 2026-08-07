@@ -1,0 +1,45 @@
+# 场景规则表 - Agent直接查表，不需要调LLM
+scene_rules:
+  # 一级场景（基于关键词匹配）
+  primary_scenes:
+    - scene_id: "code"
+      name: "代码相关"
+      keywords: ["代码", "编程", "开发", "函数", "类", "模块", "API", "bug", "fix"]
+    
+    - scene_id: "design"
+      name: "设计相关"
+      keywords: ["设计", "UI", "UX", "界面", "样式", "布局", "配色", "字体"]
+    
+    - scene_id: "planning"
+      name: "规划相关"
+      keywords: ["计划", "规划", "任务", "进度", "里程碑", "排期"]
+    
+    - scene_id: "learning"
+      name: "学习相关"
+      keywords: ["学习", "教程", "文档", "书籍", "课程", "理解"]
+    
+    - scene_id: "debug"
+      name: "调试相关"
+      keywords: ["调试", "排查", "错误", "报错", "异常", "日志"]
+  
+  # 二级场景（基于一级场景+关键词）
+  secondary_scenes:
+    - scene_id: "code:review"
+      parent: "code"
+      name: "代码审查"
+      keywords: ["review", "审查", "PR", "merge"]
+    
+    - scene_id: "code:refactor"
+      parent: "code"
+      name: "代码重构"
+      keywords: ["重构", "优化", "清理", "简化"]
+    
+    - scene_id: "design:ui"
+      parent: "design"
+      name: "UI设计"
+      keywords: ["UI", "界面", "组件", "布局"]
+    
+    - scene_id: "design:ux"
+      parent: "design"
+      name: "UX设计"
+      keywords: ["UX", "体验", "交互", "流程"]

@@ -1,0 +1,19 @@
+[project]
+name = "mw-sdk"
+version = "0.7.0"
+description = "Memory Workstation SDK — 纯数据引擎，零 LLM 依赖，Agent 进程内直连 MW 知识库读写记忆"
+requires-python = ">=3.13,<3.14"
+dependencies = []
+
+[project.scripts]
+mw = "mw_sdk.cli:main"
+
+[tool.setuptools.package-data]
+mw_sdk = ["_core/*.pyd", "_core/*.dll", "_core/models/**/*"]
+
+[tool.setuptools.packages.find]
+include = ["mw_sdk*"]
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
