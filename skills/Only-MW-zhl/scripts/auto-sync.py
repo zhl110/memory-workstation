@@ -12,6 +12,11 @@ import os
 import sys
 from pathlib import Path
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 SKILL_DIR = Path("d:/mycode/agent-hub/skills/Only-MW-zhl")
 MANIFEST = SKILL_DIR / "_sync_manifest.json"
 PROJECT_ROOT = Path("d:/mycode")

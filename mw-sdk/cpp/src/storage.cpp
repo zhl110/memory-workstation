@@ -170,7 +170,8 @@ void Storage::init_schema() {
     // memory_classify
     exec_sql(
         "CREATE TABLE IF NOT EXISTS memory_classify ("
-        "doc_id INTEGER PRIMARY KEY,"
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "doc_id INTEGER NOT NULL REFERENCES document_files(id),"
         "label TEXT NOT NULL,"
         "title TEXT DEFAULT '',"
         "memory_tier TEXT DEFAULT 'warm',"
@@ -195,19 +196,21 @@ void Storage::init_schema() {
         "tier TEXT DEFAULT 'warm',"
         "tier_updated_at TEXT,"
         "valid_from TEXT,"
-        "valid_until TEXT"
+        "valid_until TEXT,"
+        "UNIQUE(doc_id)"
         ")"
     );
 
     // memory_entity
     exec_sql(
         "CREATE TABLE IF NOT EXISTS memory_entity ("
-        "doc_id INTEGER,"
+        "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "doc_id INTEGER NOT NULL REFERENCES document_files(id),"
         "entity_name TEXT,"
         "entity_type TEXT,"
         "weight REAL DEFAULT 1.0,"
         "created_at TEXT,"
-        "PRIMARY KEY (doc_id, entity_name, entity_type)"
+        "UNIQUE(doc_id, entity_name, entity_type)"
         ")"
     );
 
@@ -228,8 +231,10 @@ void Storage::init_schema() {
     exec_sql(
         "CREATE TABLE IF NOT EXISTS memory_access_record ("
         "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "doc_id INTEGER NOT NULL,"
-        "access_time TEXT"
+        "doc_id INTEGER REFERENCES document_files(id),"
+        "access_time TEXT,"
+        "client_type TEXT,"
+        "task_context TEXT"
         ")"
     );
 
