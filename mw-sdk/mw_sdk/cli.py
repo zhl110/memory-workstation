@@ -27,6 +27,8 @@ def get_agent_db(agent_id: str | None = None) -> str:
 
 def _cmd_search(client, args):
     """搜索记忆（SQLite + 可选 MD 文件）"""
+    if getattr(args, "mode", None) and args.mode != "rrf":
+        client.set_mode(args.mode)
     results = client.search(args.query, args.top_k, explain=args.explain,
                             enable_vector=not args.no_vector, enable_graph=not args.no_graph,
                             extra_keywords=args.extra or None)
@@ -1065,6 +1067,8 @@ def main():
     p_search.add_argument("--no-graph", action="store_true", help="关闭图谱关联展开（默认启用）")
     p_search.add_argument("--extra", nargs="*", default=[], help="额外关键词列表，OR 语义扩大覆盖")
     p_search.add_argument("--include-md", action="store_true", help="同时搜索导出的 MD 文件（原文精确匹配）")
+    p_search.add_argument("--mode", choices=["rrf", "hybrid"], default="rrf",
+                          help="搜索模式：rrf（默认，稳定）或 hybrid（权重参与排序，新/高权重记忆更易浮出）")
 
     p_search_links = sub.add_parser("search-links", help="知识图谱搜索（返回所有关联记忆）")
     p_search_links.add_argument("query", help="搜索关键词")

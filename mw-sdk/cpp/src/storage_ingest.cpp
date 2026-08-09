@@ -270,7 +270,7 @@ int Storage::insert_memory(const std::string& content,
         "INSERT INTO memory_classify "
         "(doc_id, label, title, memory_tier, weight, importance, compact_content, "
         "content_category, sub_category, depth, tags, workspace_id, memory_type, create_time, scope, project) "
-        "VALUES (?, ?, ?, 'warm', ?, ?, ?, ?, ?, ?, '[]', 'default', 'session', datetime('now'), ?, ?)",
+        "VALUES (?, ?, ?, 'warm', ?, ?, ?, ?, ?, ?, '[]', 'default', ?, datetime('now'), ?, ?)",
         -1, &stmt, nullptr);
     if (rc != SQLITE_OK) return -1;
 
@@ -283,8 +283,9 @@ int Storage::insert_memory(const std::string& content,
     sqlite3_bind_text(stmt, 7, get("category").c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 8, get("sub_category").c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 9, get("depth").c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 10, get("scope").c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 11, get("project").c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 10, get("memory_type", "session").c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 11, get("scope").c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 12, get("project").c_str(), -1, SQLITE_TRANSIENT);
 
     rc = sqlite3_step(stmt);
     sqlite3_finalize(stmt);
@@ -715,7 +716,7 @@ Storage::BatchIngestResult Storage::batch_ingest(const std::string& content,
         "(doc_id, label, title, memory_tier, weight, importance, compact_content, "
         "content_category, sub_category, depth, tags, workspace_id, memory_type, create_time, scope, project, "
         "scene, emotion, tier, valid_from, valid_until) "
-        "VALUES (?, ?, ?, 'warm', ?, ?, ?, ?, ?, ?, '[]', 'default', 'session', datetime('now'), ?, ?, ?, ?, ?, ?, ?)",
+        "VALUES (?, ?, ?, 'warm', ?, ?, ?, ?, ?, ?, '[]', 'default', ?, datetime('now'), ?, ?, ?, ?, ?, ?, ?)",
         -1, &stmt, nullptr);
     if (rc != SQLITE_OK) { rollback_transaction(); result.doc_id = -1; return result; }
 
@@ -728,13 +729,14 @@ Storage::BatchIngestResult Storage::batch_ingest(const std::string& content,
     sqlite3_bind_text(stmt, 7, get("category").c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 8, get("sub_category").c_str(), -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(stmt, 9, get("depth").c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 10, get("scope").c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 11, get("project").c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 12, get("scene").c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 13, get("emotion").c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 14, get("tier", "warm").c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 15, get("valid_from").c_str(), -1, SQLITE_TRANSIENT);
-    sqlite3_bind_text(stmt, 16, get("valid_until").c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 10, get("memory_type", "session").c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 11, get("scope").c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 12, get("project").c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 13, get("scene").c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 14, get("emotion").c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 15, get("tier", "warm").c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 16, get("valid_from").c_str(), -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(stmt, 17, get("valid_until").c_str(), -1, SQLITE_TRANSIENT);
 
     rc = sqlite3_step(stmt);
     sqlite3_finalize(stmt);

@@ -10,17 +10,18 @@ add_compile_options(/utf-8)
 
 # pybind11 — skip internal find_package Python by using our vars
 find_package(pybind11 CONFIG REQUIRED)
-find_package(Python COMPONENTS Development REQUIRED)
 
 # Force release-only Python lib (prevent python313_d.lib lookup)
-# Uses FindPython resolution instead of hardcoded install paths.
-# Python_EXECUTABLE is passed from build.bat/build.ps1.
-set(Python_LIBRARY_RELEASE "${Python_LIBRARY_RELEASE}")
-set(Python_LIBRARY_DEBUG "${Python_LIBRARY_RELEASE}")
-set(Python_LIBRARIES "${Python_LIBRARY_RELEASE}")
+# 注意：使用 D:\py313 junction 别名（指向真实 Python 安装目录），
+# 避免 link.exe 读取含中文路径(C:\Users\周海龙\...)的响应文件乱码导致 Unknown system error -1。
+# 此 set 必须在 find_package(pybind11) 之后，否则会被 FindPython 覆盖。
+set(Python_LIBRARY_RELEASE "D:/py313/libs/python313.lib")
+set(Python_LIBRARY_DEBUG "D:/py313/libs/python313.lib")
+set(Python_LIBRARIES "D:/py313/libs/python313.lib")
 
-message(STATUS "Python_EXECUTABLE=${Python_EXECUTABLE}")
+message(STATUS "Python_LIBRARIES=${Python_LIBRARIES}")
 message(STATUS "Python_LIBRARY_RELEASE=${Python_LIBRARY_RELEASE}")
+message(STATUS "Python_LIBRARY_DEBUG=${Python_LIBRARY_DEBUG}")
 
 # SQLite3 amalgamation (直接编译源码，无需系统安装)
 add_library(sqlite3 STATIC

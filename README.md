@@ -1,62 +1,122 @@
-# memory-station 全自动记忆工作台
+# Memory Workstation 全自动记忆工作台
 
 > 多接口大模型记忆管理系统，自动扫描 Claude/Codex 记忆文件，AI分类归档，供随时调取。
 > 支持 DeepSeek / Claude / Ollama / 本地模型等多种接入方式。
->
-> 数据与软件分离：记忆数据存储在本地数据目录，程序与数据零耦合。
 
-## 仓库结构
+---
 
-```
-memory-station/
-├── src/            # 桌面程序（GUI + 扫描 + 分类 + API）
-├── mw-sdk/         # 纯数据引擎 SDK（pip install . 即用）
-├── skills/         # Agent 技能包（Only-MW，需搭配 mw-sdk）
-└── scripts/        # 辅助脚本
-```
+## 首次部署（新机器全链路）
 
-## Claude 技能包（skills/）
+部署 = 三件套：**exe（桌面软件）+ skill（Agent 记忆技能）+ SDK（数据引擎）**。以下按顺序执行。
 
-`skills/Only-MW-zhl/` 是给 Claude/Codex 等 Agent 用的记忆工作流技能（搜索/写入/反思）。使用它依赖 `mw-sdk`：
+### 前提
+
+- **Python 3.13**（铁律）：全程用 `C:/Users/周海龙/AppData/Local/Programs/Python/Python313/python.exe`，严禁用 PATH 上默认的 3.12（无法加载 cp313 的 `.pyd`）
+- **网络**：安装 pip 依赖、下载向量模型时需联网
+
+### 第一步：安装 SDK（数据引擎）
 
 ```bash
-# 1. 安装 SDK
-cd mw-sdk && pip install .
-
-# 2. 部署技能到你的 Agent（示例：Claude Code）
-cp -r skills/Only-MW-zhl ~/.claude/skills/Only-MW-zhl
+# 源码区安装（唯一可改代码的位置）
+pip install -e D:\mycode\memory-workstation\mw-sdk\
+# 或仅运行时安装
+pip install -r D:\mycode\memory-workstation\requirements.txt
 ```
 
-技能首次运行会自动初始化本地数据文件（模板不含个人内容）。
+验证：
+
+```bash
+# 用 3.13，勿用 PATH 默认 python
+C:\Users\周海龙\AppData\Local\Programs\Python\Python313\python.exe -c "from mw_sdk import MemoryClient; print('ok')"
+```
+
+> 装机注意：SDK 是纯 Python + C++ 编译产物（`mw_core.cp313-win_amd64.pyd`），**零 LLM 依赖**。LLM 由上层（Claude/Codex/exe）各自提供。
+
+### 第二步：初始化数据库
+
+```bash
+C:\Users\周海龙\AppData\Local\Programs\Python\Python313\python.exe -c "from mw_sdk import MemoryClient; c=MemoryClient(r'D:\MemoryWorkstation\.memory-workstation\meta_agents.sqlite'); c.init_schema(); c.close(); print('db ok')"
+```
+
+- 数据库位置：`D:\MemoryWorkstation\.memory-workstation\meta_agents.sqlite`（Agent 共享库）
+- exe 专用：`meta.sqlite`（不同库，互不跨搜）
+
+### 第三步：部署 skill（Agent 技能）
+
+```bash
+# Claude Code
+# 已存在的 junction 指向 D:\mycode\agent-hub\skills\Only-MW-zhl，新机器需重建：
+New-Item -ItemType Junction -Path "$HOME\.claude\skills\Only-MW-zhl" `
+  -Target "D:\mycode\agent-hub\skills\Only-MW-zhl"
+
+# 安装记忆 Hooks（可选但推荐，自动触发记忆写入）
+python D:\mycode\agent-hub\skills\Only-MW-zhl\scripts\install-hooks.py
+```
+
+### 第四步：验证部署
+
+```bash
+# 环境检查（依赖 + 数据库文件存在性），退出码 0=正常
+python D:\mycode\agent-hub\skills\Only-MW-zhl\scripts\check-deps.py
+
+# 功能验证
+mw search "测试" -n 1      # 搜索正常
+mw stats                    # 统计正常
+mw vector-status            # 向量索引状态（可选，无索引时自动建）
+```
+
+### 首次部署常见卡点
+
+| 现象 | 原因 | 解决 |
+|------|------|------|
+| `DLL load failed` / `is_available()=False` | 用了 Python 3.12 跑 3.13 编译的 `.pyd` | 改用 3.13 绝对路径执行 |
+| `mw: command not found` | SDK 未 pip install 或 PATH 未含 Scripts | `pip install -e D:\...\mw-sdk`（`mw` 命令由 entry point 提供） |
+| `meta_agents.sqlite` 不存在 | 未执行 init_schema() | 跑第二步建库 |
+| skill 目录空 / 读不到 | junction 未建立 | 重建第三步的 Junction，并确认 `D:\mycode\agent-hub\skills\Only-MW-zhl` 存在 |
+| 向量搜索无结果 | 向量索引未构建 | `mw vector-build`（或 search 时自动建） |
+
+---
 
 ## 快速开始
 
 ### 1. 依赖
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt   # 第三方依赖全集见文件内注释
 ```
 
-核心依赖：`requests`（API调用）、`sqlite3`（内置）、`lancedb`（向量存储）
+| 类别 | 依赖 | 用途 |
+|------|------|------|
+| 核心框架 | `pystray` / `watchdog` | 系统托盘 / 文件监控 |
+| HTTP | `fastapi` / `uvicorn` / `requests` | API 服务 / 请求 |
+| 向量存储 | `lancedb` / `pyarrow` | 向量数据库 |
+| 本地 LLM | `llama-cpp-python` | GGUF 本地模型（云端接入可省略） |
+| NLP | `jieba` / `tiktoken` / `transformers` / `onnxruntime` | 中文分词 / token 计数 / 可选模型 |
+| MCP | `mcp` | MCP 服务器 |
+| 其他 | `Pillow` / `tomli` / `ttkbootstrap` | 图片 / TOML / UI 主题 |
+
+环境可用性检查（自动扫描依赖 + 数据库文件）：
+
+```bash
+python ~/.claude/skills/Only-MW-zhl/scripts/check-deps.py
+# 退出码 0=正常 / 1=有警告可降级 / 2=有错误无法使用
+```
 
 ### 2. 配置
 
-复制 `config.toml.example` 为 `config.toml`，确保 `[llm.classify]` 配置正确：
+复制 `config.toml`，确保 `[llm.classify]` 配置正确：
 
 ```toml
 [llm.classify]
 provider = "custom_api"                      # 接入方式
-api_key = "your_api_key"                     # API密钥
-api_model = "deepseek-v4-flash"             # 模型名
+api_key = "sk-你的密钥"                     # API密钥（填入真实密钥）
+api_model = "deepseek-v4-flash"              # 模型名
 api_base_url = "http://127.0.0.1:4000/v1/chat/completions"  # LiteLLM网关
 ```
 
 也支持 cc-switch / mimo serve / Ollama 等多种后端，只需改 `provider` 和对应配置。
 
 ### 3. 运行
-
-> C++ 核心引擎（`mw_core.cp313-win_amd64.pyd`）已随仓库分发，Windows + Python 3.13 直接可用。
-> 其他平台/版本需自行编译：`cd mw-sdk/cpp && build.bat`（见 `mw-sdk/cpp/README.md`）。
 
 ```bash
 python -m src.main
@@ -118,18 +178,18 @@ Token 在 `config.toml` 中查看，首次运行自动生成。
 ## 目录结构
 
 ```
-memory-station/
+MemoryWorkstation/
 ├── src/
 │   ├── main.py              # 主程序入口
 │   ├── scanner/scanner.py   # 两阶段扫描器（Gate1 + Gate2）
 │   ├── llm/manager.py       # 多后端 LLM 管理器
-│   ├── storage/             # SQLite + 向量存储
+│   ├── storage/             # SQLite + LanceDB 存储
 │   ├── gateway/             # MCP + HTTP API
 │   └── tray/tray_app.py     # 系统托盘
-├── mw-sdk/                  # 纯数据引擎 SDK（零 LLM 依赖）
-├── config.toml.example      # 配置文件模板（复制为 config.toml）
-├── memory_storage/          # 运行数据目录（本地）
-└── logs/                    # 运行日志（本地）
+├── config.toml              # 配置文件
+├── local_llm/embed/         # 向量嵌入模型（可选，nomic-embed-text）
+├── memory_export/           # 记忆导出目录（Markdown 树）
+└── logs/                    # 运行日志
 ```
 
 ---
@@ -195,3 +255,50 @@ memory-station/
 | 磁盘空间不足 | 清理 `memory_export/` 旧导出和 `logs/` |
 | 托盘图标不显示 | 安装 pystray：`pip install pystray` |
 | 数据库损坏 | 程序自动从快照恢复，检查 `logs/error.log` |
+
+---
+
+## 注意事项
+
+### 环境铁律
+
+- **Python 版本**：MW 相关命令一律用 **Python 3.13**（`C:/Users/周海龙/AppData/Local/Programs/Python/Python313/python.exe`）。PATH 上的 3.12 加载不了 cp313 编译的 `.pyd`，会 `DLL load failed` 或 `is_available()=False`。
+- **源码区 vs 工作区**：改代码只在 `D:\mycode\memory-workstation\mw-sdk\`；`D:\MemoryWorkstation\mw-sdk\` 是 Agent 日常使用区，只接收源码区验证通过的成品，禁止直接改/编译。
+- **数据与软件分离**：源码跑 run.py 写 `.memory-workstation-dev/`，打包软件写 `D:\MemoryWorkstation\.memory-workstation/`，互不干扰。
+
+### 核心功能保护
+
+以下功能修改有铁律：导入（ingest）、导出（export）、搜索（search）、知识图谱（cross_ref/crawl）、FTS5（reindex）、向量（build_vector）、五张表 schema（memory_classify/memory_fts/memory_vector/memory_entity/memory_cross_ref）。禁止降级实现、阉割功能、静默失败。
+
+### 搜索模式（rrf vs hybrid）
+
+| 模式 | 特点 | 适用 |
+|------|------|------|
+| `rrf`（默认） | 只按 FTS5+Entity+Vector 三路 RRF 排名，**不排 weight** | 常规搜索，稳定 |
+| `hybrid` | weight 参与排序（+Ebbinghaus 遗忘曲线） | 新写入/高权重记忆默认 rrf 搜不到时 |
+
+```bash
+mw search "刚写入的关键词" --mode hybrid -n 1   # 写入后验证
+```
+
+注意事项：`tier`（层级）与 `--crawl`（建关联边）**不影响搜索排位**，只用于管理/协作。
+
+### 搜索优先级协议（写给 Agent）
+
+```
+确切关键词（如"WAL协议"）→ grep MD 文件 或 mw search --include-md
+模糊/相关（如"上次那个用户说的问题"）→ mw search（语义匹配广）
+需要关联（如"这个决策影响了什么"）→ mw search --graph
+刚写入搜不到 → mw search --mode hybrid（权重浮出，勿盲目 rebuild-fts5）
+```
+
+### 多 Agent 共享
+
+Claude / MiMo / Codex 共用 `meta_agents.sqlite`，`mw search "关键词"` 即搜全部，无需 `--agent`。数据目录可经软件目录下 `MemoryWorkstation.cfg`（一行路径）随时改，无需重打包。
+
+### 修改后必须
+
+1. 改 C++ → 重编译 + 部署新 `.pyd` + 清 `__pycache__`
+2. 改 Python → `python -c "from mw_sdk import MemoryClient"` 确认导入
+3. 全部修改 → 在源码区 `pytest tests/` 通过后才允许同步到工作区
+4. 涉及文档 → 检查 `ARCHITECTURE.md` / `CLAUDE.md` / skill 是否同步更新

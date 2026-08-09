@@ -14,7 +14,7 @@ namespace mw {
 
 // ── Windows UTF-8 路径辅助 ───────────────────────────────────
 // std::ifstream 用窄字符串（A 码表）打开路径，中文系统按 GBK 解释 UTF-8 字节，
-// 导致含中文的用户路径打不开模型/vocab 文件。
+// 导致 C:\Users\周海龙\... 这类路径打不开模型/vocab 文件。
 // 这里统一走宽字符路径打开（与下方 ONNX wide-char 加载一致）。
 
 #ifdef _WIN32

@@ -9,24 +9,13 @@ chcp 65001 > $null
 
 $SrcDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $BuildDir = Join-Path $SrcDir "build"
-$Python = if ($env:MW_PYTHON) { $env:MW_PYTHON } else { "python" }
-$Vcvars = $env:VCVARS
-if (-not $Vcvars) {
-    if ($env:VSINSTALLDIR) { $Vcvars = Join-Path $env:VSINSTALLDIR "VC\Auxiliary\Build\vcvarsall.bat" }
-    else { $Vcvars = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" }
-}
+$Python = "D:\py313\python.exe"
+$Vcvars = "D:\VS_BuildTools\VS_BuildTools\2026_Insiders\VC\Auxiliary\Build\vcvarsall.bat"
 
 Write-Host "=== MW Core C++ Build ==="
 Write-Host "Source: $SrcDir"
 Write-Host "Build:  $BuildDir"
 Write-Host "Python: $Python"
-
-if (-not (Test-Path (Join-Path $SrcDir "third_party\onnxruntime\include"))) {
-    Write-Host "[WARN] onnxruntime not found in third_party\onnxruntime." -ForegroundColor Yellow
-    Write-Host "       C++ engine requires onnxruntime. Download and place it under third_party/onnxruntime," -ForegroundColor Yellow
-    Write-Host "       or use the pure-Python fallback (SDK works without C++ engine)." -ForegroundColor Yellow
-    Write-Host ""
-}
 
 # Get pybind11 cmake dir
 $Pybind11Dir = & "$Python" -c "import pybind11; print(pybind11.get_cmake_dir())"

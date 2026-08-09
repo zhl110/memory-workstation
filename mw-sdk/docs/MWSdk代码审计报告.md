@@ -4,7 +4,7 @@
 2026-06-29
 
 ## 审计范围
-`mw_sdk/` 目录下所有Python文件
+`D:\mycode\memory-workstation\mw-sdk\mw_sdk\` 目录下所有Python文件
 
 ---
 

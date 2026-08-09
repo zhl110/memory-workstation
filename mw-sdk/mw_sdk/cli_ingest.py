@@ -194,6 +194,7 @@ def run_ingest(args: object) -> None:
         "entities": entities,
         "tags": tags,
         "scope": getattr(args, 'scope', 'global'),
+        "memory_type": getattr(args, 'memory_type', 'session'),
     }
 
     db_path = args.db if hasattr(args, 'db') and args.db else None

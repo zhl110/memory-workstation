@@ -40,15 +40,10 @@ cpp/
 
 ## 构建
 
-> ⚠️ 大型二进制（ONNX 模型、onnxruntime、.pyd）不入库。clone 后需先构建或下载。
-
 ```bash
 cd mw-sdk/cpp
-build.bat          # Windows（MSVC + CMake + pybind11 + Python 3.13）
+build.bat
 ```
-
-- `.onnx` / `.safetensors` 嵌入模型与 `onnxruntime` 运行时不包含在仓库中，需自行准备或从发布页下载。
-- 编译产物 `_core/mw_core.*.pyd` 不在 git 中，构建完成后自动生成。
 
 ## 使用
 
