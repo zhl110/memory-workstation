@@ -17,9 +17,10 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-SKILL_DIR = Path("d:/mycode/agent-hub/skills/Only-MW-zhl")
+_REPO_ROOT = Path(__file__).resolve().parents[3]
+SKILL_DIR = Path(os.environ.get("MW_SKILL_DIR", _REPO_ROOT / "skills" / "Only-MW-zhl"))
 MANIFEST = SKILL_DIR / "_sync_manifest.json"
-PROJECT_ROOT = Path("d:/mycode")
+PROJECT_ROOT = Path(os.environ.get("MW_PROJECT_ROOT", _REPO_ROOT))
 
 def hash_file(path: Path) -> str | None:
     if not path.exists():

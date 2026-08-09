@@ -16,7 +16,8 @@ import sys
 from pathlib import Path
 
 # ── hook 配置 ──────────────────────────────────────────────
-PROJECT_ROOT = Path("d:/mycode")
+# 仓库根目录。可通过环境变量 MW_PROJECT_ROOT 覆盖（本机部署时指向含 .claude/hooks 的工作区根）
+PROJECT_ROOT = Path(os.environ.get("MW_PROJECT_ROOT", Path(__file__).resolve().parents[3]))
 
 CLAUDE_HOOKS = {
     "PreMessage": {
@@ -173,7 +174,7 @@ MW 记忆系统的 MiMo hook 文件。
 
 使用 MiMo 的 self-extend skill 创建，或手动编写 TypeScript 文件。
 
-参考 Python 版本：`d:/mycode/.claude/hooks/pre-message.py`
+参考 Python 版本：`<workspace>/.claude/hooks/pre-message.py`
 """
     readme_path.write_text(readme_content, encoding="utf-8")
     print("  [add] MiMo hooks 目录 + README")

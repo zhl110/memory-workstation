@@ -3,12 +3,15 @@ import pytest
 import subprocess
 import sys
 import os
+from pathlib import Path
+
+_MW_SDK_DIR = Path(__file__).resolve().parent.parent
 
 
 def run_mw(*args, cwd=None):
     """执行 mw CLI 命令，返回 (returncode, stdout)"""
     env = os.environ.copy()
-    env["PYTHONPATH"] = "D:\\MemoryWorkstation\\mw-sdk"
+    env["PYTHONPATH"] = str(_MW_SDK_DIR)
     result = subprocess.run(
         [sys.executable, "-m", "mw_sdk.cli", *args],
         capture_output=True, text=True, timeout=30, cwd=cwd, env=env

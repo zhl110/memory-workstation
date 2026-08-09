@@ -8,6 +8,7 @@ Exit code:
     1 — 有警告（可降级运行）
     2 — 有错误（无法使用）
 """
+import os
 import pathlib
 import sys
 
@@ -15,6 +16,8 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
+_DATA_DIR = pathlib.Path(os.environ.get("MW_DATA_DIR", pathlib.Path.home() / ".memory-workstation"))
 
 
 def main():
@@ -25,12 +28,12 @@ def main():
         from mw_sdk import MemoryClient  # noqa: F401
         print("✅  mw-sdk 已安装")
     except ImportError:
-        errors.append("mw-sdk 未安装。运行: pip install d:/mycode/memory-workstation/mw-sdk/")
+        errors.append("mw-sdk 未安装。运行: pip install -e .（在 mw-sdk 目录下）")
     except Exception as e:
         errors.append(f"mw-sdk 导入异常: {e}")
 
-    claude_db = pathlib.Path("D:/MemoryWorkstation/.memory-workstation/meta_agents.sqlite")
-    pool_db = pathlib.Path("D:/MemoryWorkstation/.memory-workstation/meta.sqlite")
+    claude_db = _DATA_DIR / "meta_agents.sqlite"
+    pool_db = _DATA_DIR / "meta.sqlite"
 
     if claude_db.exists():
         size_mb = claude_db.stat().st_size / 1024 / 1024

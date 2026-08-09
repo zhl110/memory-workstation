@@ -13,7 +13,7 @@
 **修复：**
 
 ```bash
-pip install d:/mycode/memory-workstation/mw-sdk/
+pip install ./mw-sdk/
 ```
 
 ### SDK 版本过旧
@@ -23,7 +23,7 @@ pip install d:/mycode/memory-workstation/mw-sdk/
 **修复：**
 
 ```bash
-pip install --force-reinstall d:/mycode/memory-workstation/mw-sdk/
+pip install --force-reinstall ./mw-sdk/
 ```
 
 ---
@@ -38,7 +38,7 @@ pip install --force-reinstall d:/mycode/memory-workstation/mw-sdk/
 
 ```python
 from mw_sdk import MemoryClient
-m = MemoryClient("D:/MemoryWorkstation/.memory-workstation/meta_agents.sqlite")
+m = MemoryClient("~/.memory-workstation/meta_agents.sqlite")
 m.init_schema()
 ```
 

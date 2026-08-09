@@ -12,7 +12,7 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 # ─── Config ──────────────────────────────────────────────────
-_DEFAULT_CFG = "D:\\MemoryWorkstation\\.memory-workstation"
+_DEFAULT_CFG = os.path.join(os.path.expanduser("~"), ".memory-workstation")
 _CFG_FILE = "MemoryWorkstation.cfg"
 
 
@@ -370,8 +370,8 @@ class DataBridge:
         cfg = _load_config()
         return {
             "md_dir": self.md_dir,
-            "staging_dir": cfg.get("staging_dir", "D:\\MemoryWorkstation\\.memory-workstation\\staging"),
-            "log_dir": cfg.get("log_dir", "D:\\MemoryWorkstation\\.memory-workstation\\logs"),
+            "staging_dir": cfg.get("staging_dir", os.path.join(os.path.expanduser("~"), ".memory-workstation", "staging")),
+            "log_dir": cfg.get("log_dir", os.path.join(os.path.expanduser("~"), ".memory-workstation", "logs")),
             "log_level": cfg.get("log_level", "INFO"),
             "api_provider": cfg.get("api_provider", "Ollama（本地）"),
             "api_key": cfg.get("api_key", ""),

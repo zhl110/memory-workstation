@@ -1086,7 +1086,7 @@ def main():
 
     p_export = sub.add_parser("export", help="导出为 Markdown 文件")
     p_export.add_argument("output_dir", default="", nargs="?",
-                          help="输出目录（默认导出到 D:/MemoryWorkstation/.memory-workstation/memory_export_all/）")
+                          help="输出目录（默认导出到 ~/.memory-workstation/memory_export_all/）")
 
     p_import = sub.add_parser("import", help="从 Markdown 文件夹导入记忆")
     p_import.add_argument("folder", help="Markdown 文件夹路径")

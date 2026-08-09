@@ -57,7 +57,7 @@ def _resolve_memory_home() -> str:
                 return path
         except Exception:
             pass
-    default = os.path.join("D:\\MemoryWorkstation", ".memory-workstation")
+    default = os.path.join(os.path.expanduser("~"), ".memory-workstation")
     try:
         os.makedirs(base, exist_ok=True)
         with open(cfg_path, "w") as f:

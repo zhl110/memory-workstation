@@ -158,7 +158,7 @@ class MemoryClient(SceneMixin, TierMixin, GraphMixin, EvolutionMixin, StatsMixin
         """初始化客户端
 
         Args:
-            db_path: SQLite 数据库文件路径，如 "D:/MemoryWorkstation/.memory-workstation/meta_agents.sqlite"
+            db_path: SQLite 数据库文件路径，如 "~/.memory-workstation/meta_agents.sqlite"
             mode: 搜索模式
                 - "rrf": 使用 RRF 融合（更稳定的排序，默认值）
                 - "hybrid": RRF + Ebbinghaus 遗忘曲线
@@ -694,7 +694,7 @@ class MemoryClient(SceneMixin, TierMixin, GraphMixin, EvolutionMixin, StatsMixin
         """设置大池子路径并重新连接（覆盖默认值）
 
         Args:
-            pool_path: 大池子数据库文件路径，如 "D:/MemoryWorkstation/.memory-workstation/meta.sqlite"
+            pool_path: 大池子数据库文件路径，如 "~/.memory-workstation/meta.sqlite"
         """
         self._pool_path = pool_path
         self._connect_pool()

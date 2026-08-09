@@ -1,7 +1,7 @@
 """Agent 路径工具函数 — **这是 MW 数据路径的唯一源头**
 
 所有 SDK 文件的数据目录路径都必须引用本文件定义的 _DEFAULT_DATA_DIR。
-**禁止**在其他文件中重复硬编码 D:/MemoryWorkstation/.memory-workstation/。
+**禁止**在其他文件中重复硬编码数据目录路径。
 
 注意事项：
 - 改数据目录只改这里一处即可，其他文件通过 import 使用
@@ -12,12 +12,8 @@ import os
 from pathlib import Path
 
 # ⚠️ 单源路径 — 所有 SDK 文件引用此常量，不要在其他文件重复写
-#    优先级：MW_DATA_DIR 环境变量 → 旧版路径（向后兼容）→ ~/.memory-workstation
-_DEFAULT_DATA_DIR = os.environ.get("MW_DATA_DIR") or (
-    "D:/MemoryWorkstation/.memory-workstation"
-    if Path("D:/MemoryWorkstation/.memory-workstation").exists()
-    else str(Path.home() / ".memory-workstation")
-)
+#    优先级：MW_DATA_DIR 环境变量 → ~/.memory-workstation
+_DEFAULT_DATA_DIR = os.environ.get("MW_DATA_DIR") or str(Path.home() / ".memory-workstation")
 
 
 def get_agent_db(name=None):

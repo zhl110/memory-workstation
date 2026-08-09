@@ -127,7 +127,7 @@ class AppContext:
         """检测版本更新，首次运行或版本变化时提示"""
         exe_dir = os.path.dirname(os.path.abspath(sys.executable if getattr(sys, 'frozen', False) else __file__))
         version_file = os.path.join(exe_dir, "version.json")
-        version_marker = os.path.join("D:\\MemoryWorkstation", ".memory-workstation", ".last_version")
+        version_marker = os.path.join(_MEMORY_HOME, ".last_version")
 
         if not os.path.exists(version_file):
             return

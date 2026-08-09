@@ -44,7 +44,7 @@ def main():
     app.setOrganizationName("MW")
 
     cfg = _load_config()
-    md_dir = cfg.get("md_dir", "D:\\MemoryWorkstation\\.memory-workstation")
+    md_dir = cfg.get("md_dir", os.path.join(os.path.expanduser("~"), ".memory-workstation"))
     bridge = DataBridge(md_dir)
     w = MainWindow(bridge)
     w.show()

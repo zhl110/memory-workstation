@@ -25,6 +25,9 @@ __build_version.txt
 *.dll
 *.obj
 *.o
+cmake_install.cmake
+Makefile
+*.cmake
 # 但发布用户需要的编译件例外（随源码分发，便于即装即用）
 !mw-sdk/mw_sdk/_core/mw_core.cp313-win_amd64.pyd
 !mw-sdk/mw_sdk/_core/onnxruntime.dll

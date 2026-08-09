@@ -192,7 +192,7 @@ MemoryClient 新增方法（Agent 和 exe 通用）：
 
 ```python
 # 跨库
-m.set_pool_path("D:/MemoryWorkstation/.memory-workstation/meta.sqlite")
+m.set_pool_path("~/.memory-workstation/meta.sqlite")
 
 # 跨库查询
 m.get_own_candidates()      # 自己的候选
@@ -210,12 +210,12 @@ Claude 和 Codex 代码一样，只是 db_path 不同：
 
 ```python
 # Claude
-m = MemoryClient("D:/MemoryWorkstation/.memory-workstation/meta_claude.sqlite")
-m.set_pool_path("D:/MemoryWorkstation/.memory-workstation/meta.sqlite")
+m = MemoryClient("~/.memory-workstation/meta_claude.sqlite")
+m.set_pool_path("~/.memory-workstation/meta.sqlite")
 
 # Codex
-m = MemoryClient("D:/MemoryWorkstation/.memory-workstation/meta_codex.sqlite")
-m.set_pool_path("D:/MemoryWorkstation/.memory-workstation/meta.sqlite")
+m = MemoryClient("~/.memory-workstation/meta_codex.sqlite")
+m.set_pool_path("~/.memory-workstation/meta.sqlite")
 ```
 
 ---

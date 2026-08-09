@@ -3,7 +3,8 @@
 import sys
 import os
 import tempfile
-sys.path.insert(0, 'd:/mycode/memory-workstation/mw-sdk/')
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from mw_sdk.audit import AuditLog
 
